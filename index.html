@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Estagio Legal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+
+<div class="app-container">
+
+    <div id="login" class="screen">
+        <div class="login-content">
+            <div class="logo">🚀</div>
+            <h1>Estagio Legal</h1>
+            <p>Seu guia de sobrevivência no estágio.</p>
+            <input type="text" id="nome" placeholder="Como a galera te chama?">
+            
+            <p id="erro-login" class="hidden" style="color: var(--danger); margin-bottom: 15px; font-size: 0.9rem;"></p>
+            
+            <button class="primary-btn" onclick="fazerLogin()">Bora começar</button>
+        </div>
+    </div>
+
+    <div id="dashboard" class="screen hidden">
+
+        <div class="top-bar">
+            <div class="user-info">
+                <div class="avatar">😎</div>
+                <h3 id="saudacao">Olá!</h3>
+            </div>
+            <button class="icon-btn" onclick="toggleTema()" title="Mudar tema">🌗</button>
+        </div>
+
+        <div class="content-area">
+            
+            <div id="inicio" class="secao">
+                <div class="card destaque">
+                    <div class="level-header">
+                        <h4>Seu Nível</h4>
+                        <span class="badge">Lvl <span id="nivel"></span></span>
+                    </div>
+                    <div class="xp-bar">
+                        <div id="xp-fill"></div>
+                    </div>
+                    <p class="xp-text">Faltam <span id="xp-restante"></span> XP pro próximo nível!</p>
+                </div>
+
+                <div class="card">
+                    <h4>Papo Reto (FAQ) 🗣️</h4>
+                    <div class="faq-item">
+                        <p><b>Estagiário tem 13º salário?</b></p>
+                        <p class="answer">Infelizmente. A lei não obriga.</p>
+                    </div>
+                    <div class="faq-item">
+                        <p><b>Qual o limite de horas?</b></p>
+                        <p class="answer">Máximo de 6h por dia (30h semanais). Nada de hora extra!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="jornada" class="secao hidden">
+                <div class="card">
+                    <h4>Bater Ponto ⏱️</h4>
+                    <div class="input-group">
+                        <label>Hora de entrada</label>
+                        <input type="time" id="entrada">
+                    </div>
+                    <div class="input-group">
+                        <label>Hora de saída</label>
+                        <input type="time" id="saida">
+                    </div>
+                    <button class="primary-btn" onclick="registrar()">Calcular e Ganhar XP</button>
+                    <div id="feedback-jornada" class="feedback hidden"></div>
+                </div>
+
+                <div class="card">
+                    <h4>Como tá a semana? 📊</h4>
+                    <div class="resumo-stats">
+                        <div class="stat"><span id="resumo-semana">0h</span><small>Semana</small></div>
+                        <div class="stat"><span id="resumo-mes">0h</span><small>Mês (Projeção)</small></div>
+                    </div>
+                    <h4 class="mt-15">Últimos registros</h4>
+                    <ul id="historico" class="lista-historico"></ul>
+                </div>
+            </div>
+
+            <div id="quiz" class="secao hidden">
+                <div class="card text-center">
+                    <div class="quiz-icon">🧠</div>
+                    <h4>Quiz Rápido</h4>
+                    <p id="pergunta" class="pergunta-texto"></p>
+                    <div id="alternativas" class="alternativas-grid"></div>
+                    <div id="quiz-msg" class="feedback hidden mt-15"></div>
+                </div>
+            </div>
+
+            <div id="recesso" class="secao hidden">
+                <div class="card">
+                    <h4>Calculadora de Férias 🏖️</h4>
+                    <p>Quantos meses você já estagiou?</p>
+                    <div class="btn-group">
+                        <button class="secondary-btn" onclick="calcularRecesso(3)">3m</button>
+                        <button class="secondary-btn" onclick="calcularRecesso(6)">6m</button>
+                        <button class="secondary-btn" onclick="calcularRecesso(12)">1 ano</button>
+                    </div>
+                    
+                    <div id="resultado-recesso" class="hidden mt-15">
+                        <div class="destaque-resultado">
+                            <h2 id="dias-recesso">0</h2>
+                            <p>dias de descanso merecido</p>
+                        </div>
+                        <button id="btn-email-recesso" class="primary-btn mt-15" onclick="gerarEmailRecesso()">Gerar E-mail de Pedido</button>
+                    </div>
+
+                    <div id="area-email-recesso" class="hidden mt-15">
+                        <textarea id="email-recesso" readonly></textarea>
+                        <button class="secondary-btn" onclick="copiarTexto('email-recesso', this)">Copiar Texto</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="provas" class="secao hidden">
+                <div class="card">
+                    <h4>Semana de Provas 📚</h4>
+                    <p class="subtitle">Você tem direito a sair mais cedo nos dias de prova!</p>
+                    
+                    <div class="input-group mt-15">
+                        <label>Data de Início</label>
+                        <input type="date" id="inicio-prova">
+                    </div>
+                    <div class="input-group">
+                        <label>Data de Término</label>
+                        <input type="date" id="fim-prova">
+                    </div>
+                    <button class="primary-btn" onclick="gerarReducao()">Gerar E-mail pro Chefe</button>
+                    
+                    <div id="area-email-reducao" class="hidden mt-15">
+                        <textarea id="email-reducao" readonly></textarea>
+                        <button class="secondary-btn" onclick="copiarTexto('email-reducao', this)">Copiar Texto</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="height: 80px;"></div>
+        </div>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="abrir('inicio', this)">
+                <span class="icon">🏠</span>
+                <span class="label">Início</span>
+            </button>
+            <button class="nav-item" onclick="abrir('jornada', this)">
+                <span class="icon">⏱️</span>
+                <span class="label">Ponto</span>
+            </button>
+            <button class="nav-item" onclick="abrir('quiz', this)">
+                <span class="icon">🧠</span>
+                <span class="label">Quiz</span>
+            </button>
+            <button class="nav-item" onclick="abrir('recesso', this)">
+                <span class="icon">🏖️</span>
+                <span class="label">Férias</span>
+            </button>
+            <button class="nav-item" onclick="abrir('provas', this)">
+                <span class="icon">📚</span>
+                <span class="label">Provas</span>
+            </button>
+        </nav>
+
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
