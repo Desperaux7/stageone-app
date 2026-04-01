@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Estagio Legal</title>
+    <title>Estagiômetro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark">
@@ -13,159 +14,301 @@
 
     <div id="login" class="screen">
         <div class="login-content">
-            <div class="logo">🚀</div>
-            <h1>Estagio Legal</h1>
-            <p>Seu guia de sobrevivência no estágio.</p>
-            <input type="text" id="nome" placeholder="Como a galera te chama?">
+            <div class="logo"><i class="ph ph-rocket-launch"></i></div>
+            <h1>Estagiômetro</h1>
+            <p>Seu assistente de carreira e rotina.</p>
             
-            <p id="erro-login" class="hidden" style="color: var(--danger); margin-bottom: 15px; font-size: 0.9rem;"></p>
+            <div class="input-group text-left w-100">
+                <label>Seu nome</label>
+                <input type="text" id="nome" placeholder="Como devemos te chamar?">
+            </div>
+
+            <div class="input-group text-left w-100 mt-15">
+                <label>Sua área de atuação</label>
+                <select id="area-atuacao">
+                    <option value="" disabled selected>Escolha sua área...</option>
+                    <option value="ti">Tecnologia & Programação</option>
+                    <option value="saude">Saúde, Ed. Física & Bem-estar</option>
+                    <option value="adm">Administração & Negócios</option>
+                    <option value="comunicacao">Marketing & Design</option>
+                    <option value="direito">Direito & Jurídico</option>
+                    <option value="eng">Engenharias</option>
+                    <option value="outros">Outras áreas</option>
+                </select>
+            </div>
             
-            <button class="primary-btn" onclick="fazerLogin()">Bora começar</button>
+            <p id="erro-login" class="feedback error hidden mt-15"></p>
+            
+            <button class="primary-btn mt-15" onclick="fazerLogin()">Acessar Plataforma</button>
         </div>
     </div>
 
     <div id="dashboard" class="screen hidden">
 
         <div class="top-bar">
-            <div class="user-info">
-                <div class="avatar">😎</div>
-                <h3 id="saudacao">Olá!</h3>
+            <div class="user-info clickable" onclick="abrirPerfil()" title="Meu Perfil">
+                <div class="avatar" id="avatar-img"><i class="ph ph-user"></i></div>
+                <div>
+                    <h3 id="saudacao">Olá!</h3>
+                    <p class="subtitle" style="font-size: 0.75rem;"><i class="ph ph-user-circle"></i> Meu Perfil</p>
+                </div>
             </div>
-            <button class="icon-btn" onclick="toggleTema()" title="Mudar tema">🌗</button>
+            <button class="icon-btn" onclick="toggleTema()" title="Mudar tema"><i class="ph ph-moon"></i></button>
         </div>
 
         <div class="content-area">
             
             <div id="inicio" class="secao">
-                <div class="card destaque">
+                <div class="card destaque clickable" onclick="abrir('conquistas', null)">
                     <div class="level-header">
-                        <h4>Seu Nível</h4>
-                        <span class="badge">Lvl <span id="nivel"></span></span>
+                        <div>
+                            <h4>Seu Nível</h4>
+                            <p class="subtitle mt-5"><i class="ph ph-medal"></i> Ver Conquistas</p>
+                        </div>
+                        <span class="badge">Nível <span id="nivel"></span></span>
                     </div>
-                    <div class="xp-bar">
+                    <div class="xp-bar mt-15">
                         <div id="xp-fill"></div>
                     </div>
-                    <p class="xp-text">Faltam <span id="xp-restante"></span> XP pro próximo nível!</p>
+                    <p class="xp-text">Faltam <span id="xp-restante"></span> XP pro próximo nível</p>
                 </div>
 
                 <div class="card">
-                    <h4>Papo Reto (FAQ) 🗣️</h4>
+                    <h4><i class="ph ph-lightbulb"></i> Radar da sua Área</h4>
+                    <p class="subtitle mb-15">Insights para <span id="label-area-user" style="font-weight: 600;">sua carreira</span></p>
+                    <div id="dicas-container" class="dicas-lista"></div>
+                </div>
+
+                <div class="card">
+                    <h4><i class="ph ph-info"></i> Guia do Estagiário</h4>
                     <div class="faq-item">
-                        <p><b>Estagiário tem 13º salário?</b></p>
-                        <p class="answer">Infelizmente. A lei não obriga.</p>
+                        <p class="pergunta"><i class="ph ph-caret-right"></i> Estagiário tem direito a 13º salário?</p>
+                        <p class="answer">Pela Lei 11.788/08, a empresa não é obrigada a pagar o 13º salário. Algumas pagam como bônus, mas é opcional.</p>
                     </div>
                     <div class="faq-item">
-                        <p><b>Qual o limite de horas?</b></p>
-                        <p class="answer">Máximo de 6h por dia (30h semanais). Nada de hora extra!</p>
+                        <p class="pergunta"><i class="ph ph-caret-right"></i> Posso fazer hora extra?</p>
+                        <p class="answer">Não. A jornada máxima é de 6h/dia (30h/semana). Passar disso descaracteriza o estágio e pode gerar vínculo trabalhista.</p>
                     </div>
+                    <div class="faq-item">
+                        <p class="pergunta"><i class="ph ph-caret-right"></i> Sinto que não estou aprendendo no estágio, apenas sendo usado como mão de obra. Isso é normal?</p>
+                        <p class="answer">Não. O estágio deve ter caráter educativo. Se você não está aprendendo ou recebendo orientação, a empresa pode estar descumprindo a finalidade do estágio.</p>
+                    </div>
+                    <div class="faq-item">
+                        <p class="pergunta"><i class="ph ph-caret-right"></i> O estágio precisa ter relação com meu curso?</p>
+                        <p class="answer">Sim. As atividades devem estar alinhadas com sua área de formação para garantir aprendizado prático.</p>
+                    </div>
+                    <div class="faq-item">
+                        <p class="pergunta"><i class="ph ph-caret-right"></i>Meu supervisor não me orienta. O que devo fazer?</p>
+                        <p class="answer">Procure o RH ou sua instituição de ensino. O acompanhamento é obrigatório no estágio.</p>
+                    </div>
+                    <div class="faq-item">
+                        <p class="pergunta"><i class="ph ph-caret-right"></i>Posso ser efetivado durante meu estágio?</p>
+                        <p class="answer">Sim, a empresa pode te contratar como funcionário a qualquer momento, encerrando o contrato de estágio.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="perfil-view" class="secao hidden">
+                <button class="secondary-btn mb-15" style="width: auto; padding: 8px 16px;" onclick="abrir('inicio', document.getElementById('btn-nav-inicio'))"><i class="ph ph-arrow-left"></i> Voltar</button>
+                
+                <div class="card text-center">
+                    <div class="profile-pic-preview" id="view-foto" style="margin-bottom: 15px; border: 2px solid var(--primary-color);">
+                        <i class="ph ph-user"></i>
+                    </div>
+                    <h3 id="view-nome" style="font-size: 1.5rem; margin-bottom: 5px;">Nome do Usuário</h3>
+                    <p class="subtitle" id="view-area" style="font-weight: 500;">Área de Atuação</p>
+                    
+                    <div class="empresa-badge mt-10">
+                        <i class="ph ph-buildings"></i> <span id="view-empresa">Empresa não informada</span>
+                    </div>
+
+                    <div class="social-links-container mt-15" id="view-redes-sociais">
+                        </div>
+
+                    <button class="primary-btn mt-15" onclick="abrir('configuracoes', null)"><i class="ph ph-pencil-simple"></i> Editar Perfil</button>
+                </div>
+                
+                <div class="card">
+                    <h4><i class="ph ph-chart-polar"></i> Suas Estatísticas</h4>
+                    <div class="resumo-stats mt-15">
+                        <div class="stat">
+                            <span id="stat-acertos">0</span>
+                            <small>Quizzes Certos</small>
+                        </div>
+                        <div class="stat">
+                            <span id="stat-streak">0</span>
+                            <small>Dias Seguidos</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="configuracoes" class="secao hidden">
+                <button class="secondary-btn mb-15" style="width: auto; padding: 8px 16px;" onclick="abrirPerfil()"><i class="ph ph-arrow-left"></i> Cancelar</button>
+                
+                <div class="card">
+                    <h4><i class="ph ph-pencil-simple"></i> Editar Dados</h4>
+
+                    <div class="input-group text-center mt-15">
+                        <div class="profile-pic-preview" id="preview-foto">
+                            <i class="ph ph-camera"></i>
+                        </div>
+                        <label for="upload-foto" class="secondary-btn mt-10" style="cursor: pointer; display: inline-block;">Alterar Foto</label>
+                        <input type="file" id="upload-foto" accept="image/*" class="hidden" onchange="carregarFoto(event)">
+                    </div>
+
+                    <div class="input-group mt-15">
+                        <label><i class="ph ph-user"></i> Como quer ser chamado?</label>
+                        <input type="text" id="perfil-nome" placeholder="Seu nome">
+                    </div>
+
+                    <div class="input-group mt-15">
+                        <label><i class="ph ph-buildings"></i> Empresa que estagia</label>
+                        <input type="text" id="perfil-empresa" placeholder="Ex: Google, Nubank...">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="ph ph-linkedin-logo"></i> Link do LinkedIn</label>
+                        <input type="url" id="perfil-linkedin" placeholder="https://linkedin.com/in/...">
+                    </div>
+
+                    <div class="input-group">
+                        <label><i class="ph ph-instagram-logo"></i> Link do Instagram</label>
+                        <input type="url" id="perfil-insta" placeholder="https://instagram.com/...">
+                    </div>
+
+                    <button class="primary-btn mt-15" onclick="salvarPerfil()"><i class="ph ph-floppy-disk"></i> Salvar Alterações</button>
+                    <div id="feedback-perfil" class="feedback success hidden mt-10">Perfil salvo com sucesso!</div>
                 </div>
             </div>
 
             <div id="jornada" class="secao hidden">
                 <div class="card">
-                    <h4>Bater Ponto ⏱️</h4>
+                    <h4><i class="ph ph-clock"></i> Registro de Ponto</h4>
+                    
+                    <div class="weekly-tracker mt-15 mb-15">
+                        <p class="subtitle text-center mb-10">Sua jornada nesta semana <br><small style="color: var(--primary-color);">🔥 Streak: <span id="dias-seguidos">0</span> dias seguidos!</small></p>
+                        <div class="days-grid" id="grid-dias-semana"></div>
+                    </div>
+
                     <div class="input-group">
-                        <label>Hora de entrada</label>
+                        <label>Entrada</label>
                         <input type="time" id="entrada">
                     </div>
                     <div class="input-group">
-                        <label>Hora de saída</label>
+                        <label>Saída</label>
                         <input type="time" id="saida">
                     </div>
-                    <button class="primary-btn" onclick="registrar()">Calcular e Ganhar XP</button>
-                    <div id="feedback-jornada" class="feedback hidden"></div>
+                    <button class="primary-btn mt-15" onclick="registrar()">Registrar Ponto</button>
+                    <div id="feedback-jornada" class="feedback hidden mt-15"></div>
                 </div>
 
                 <div class="card">
-                    <h4>Como tá a semana? 📊</h4>
-                    <div class="resumo-stats">
-                        <div class="stat"><span id="resumo-semana">0h</span><small>Semana</small></div>
-                        <div class="stat"><span id="resumo-mes">0h</span><small>Mês (Projeção)</small></div>
+                    <h4><i class="ph ph-chart-bar"></i> Resumo</h4>
+                    <div class="resumo-stats mt-15">
+                        <div class="stat"><span id="resumo-semana">0h</span><small>Na Semana</small></div>
+                        <div class="stat"><span id="resumo-mes">0h</span><small>No Mês</small></div>
                     </div>
-                    <h4 class="mt-15">Últimos registros</h4>
+                    <h4 class="mt-15 mb-10">Últimos registros</h4>
                     <ul id="historico" class="lista-historico"></ul>
                 </div>
             </div>
 
             <div id="quiz" class="secao hidden">
                 <div class="card text-center">
-                    <div class="quiz-icon">🧠</div>
-                    <h4>Quiz Rápido</h4>
-                    <p id="pergunta" class="pergunta-texto"></p>
-                    <div id="alternativas" class="alternativas-grid"></div>
+                    <div class="quiz-icon"><i class="ph ph-brain"></i></div>
+                    <h4>Desafio Diário</h4>
+                    <p class="subtitle mb-15">Acerte a pergunta do dia para ganhar XP.</p>
+                    
+                    <div id="quiz-container">
+                        <p id="pergunta" class="pergunta-texto"></p>
+                        <div id="alternativas" class="alternativas-grid mt-15"></div>
+                    </div>
+                    
                     <div id="quiz-msg" class="feedback hidden mt-15"></div>
                 </div>
             </div>
 
             <div id="recesso" class="secao hidden">
                 <div class="card">
-                    <h4>Calculadora de Férias 🏖️</h4>
-                    <p>Quantos meses você já estagiou?</p>
+                    <h4><i class="ph ph-umbrella"></i> Calculadora de Recesso</h4>
+                    <p class="subtitle mb-15">Selecione quantos meses você já estagiou:</p>
                     <div class="btn-group">
-                        <button class="secondary-btn" onclick="calcularRecesso(3)">3m</button>
-                        <button class="secondary-btn" onclick="calcularRecesso(6)">6m</button>
-                        <button class="secondary-btn" onclick="calcularRecesso(12)">1 ano</button>
+                        <button class="secondary-btn" onclick="calcularRecesso(3)">3 meses</button>
+                        <button class="secondary-btn" onclick="calcularRecesso(6)">6 meses</button>
+                        <button class="secondary-btn" onclick="calcularRecesso(12)">12 meses</button>
                     </div>
                     
                     <div id="resultado-recesso" class="hidden mt-15">
                         <div class="destaque-resultado">
                             <h2 id="dias-recesso">0</h2>
-                            <p>dias de descanso merecido</p>
+                            <p>dias de descanso garantidos</p>
                         </div>
-                        <button id="btn-email-recesso" class="primary-btn mt-15" onclick="gerarEmailRecesso()">Gerar E-mail de Pedido</button>
+                        <button id="btn-email-recesso" class="primary-btn mt-15" onclick="gerarEmailRecesso()"><i class="ph ph-envelope-simple"></i> Rascunhar E-mail</button>
                     </div>
 
                     <div id="area-email-recesso" class="hidden mt-15">
                         <textarea id="email-recesso" readonly></textarea>
-                        <button class="secondary-btn" onclick="copiarTexto('email-recesso', this)">Copiar Texto</button>
+                        <button class="secondary-btn mt-10" onclick="copiarTexto('email-recesso', this)"><i class="ph ph-copy"></i> Copiar Texto</button>
                     </div>
                 </div>
             </div>
 
             <div id="provas" class="secao hidden">
                 <div class="card">
-                    <h4>Semana de Provas 📚</h4>
-                    <p class="subtitle">Você tem direito a sair mais cedo nos dias de prova!</p>
+                    <h4><i class="ph ph-books"></i> Redução por Provas</h4>
+                    <p class="subtitle mb-15">A lei permite reduzir a carga horária pela metade.</p>
                     
-                    <div class="input-group mt-15">
-                        <label>Data de Início</label>
+                    <div class="input-group">
+                        <label>Início do período de provas</label>
                         <input type="date" id="inicio-prova">
                     </div>
                     <div class="input-group">
-                        <label>Data de Término</label>
+                        <label>Término do período</label>
                         <input type="date" id="fim-prova">
                     </div>
-                    <button class="primary-btn" onclick="gerarReducao()">Gerar E-mail pro Chefe</button>
+                    <button class="primary-btn mt-15" onclick="gerarReducao()"><i class="ph ph-envelope-simple"></i> Rascunhar Pedido</button>
                     
                     <div id="area-email-reducao" class="hidden mt-15">
                         <textarea id="email-reducao" readonly></textarea>
-                        <button class="secondary-btn" onclick="copiarTexto('email-reducao', this)">Copiar Texto</button>
+                        <button class="secondary-btn mt-10" onclick="copiarTexto('email-reducao', this)"><i class="ph ph-copy"></i> Copiar Texto</button>
                     </div>
                 </div>
             </div>
+
+          <div id="conquistas" class="secao hidden">
+                <button class="secondary-btn mb-15" style="width: auto; padding: 8px 16px;" onclick="abrir('inicio', document.getElementById('btn-nav-inicio'))"><i class="ph ph-arrow-left"></i> Voltar</button>
+                
+                <div class="card">
+                    <h4><i class="ph ph-trophy"></i> Sala de Troféus</h4>
+                    <p class="subtitle mb-15">Complete ações no app para desbloquear.</p>
+                    <div class="achievements-grid" id="lista-conquistas">
+                        </div>
+                </div>
+            </div>
             
-            <div style="height: 80px;"></div>
+            <div style="height: 90px;"></div>
         </div>
 
         <nav class="bottom-nav">
-            <button class="nav-item active" onclick="abrir('inicio', this)">
-                <span class="icon">🏠</span>
+            <button class="nav-item active" id="btn-nav-inicio" onclick="abrir('inicio', this)">
+                <i class="ph ph-house icon"></i>
                 <span class="label">Início</span>
             </button>
             <button class="nav-item" onclick="abrir('jornada', this)">
-                <span class="icon">⏱️</span>
+                <i class="ph ph-clock icon"></i>
                 <span class="label">Ponto</span>
             </button>
             <button class="nav-item" onclick="abrir('quiz', this)">
-                <span class="icon">🧠</span>
+                <i class="ph ph-brain icon"></i>
                 <span class="label">Quiz</span>
             </button>
             <button class="nav-item" onclick="abrir('recesso', this)">
-                <span class="icon">🏖️</span>
+                <i class="ph ph-umbrella icon"></i>
                 <span class="label">Férias</span>
             </button>
             <button class="nav-item" onclick="abrir('provas', this)">
-                <span class="icon">📚</span>
+                <i class="ph ph-books icon"></i>
                 <span class="label">Provas</span>
             </button>
         </nav>
